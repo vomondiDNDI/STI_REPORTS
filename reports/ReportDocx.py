@@ -1,5 +1,3 @@
-# import docx NOT python-docx
-
 #import docx
 #import os #to run/open document automatically
 
@@ -11,8 +9,8 @@ from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.enum.table import WD_ROW_HEIGHT
 from docx.shared import Inches,Pt
 import psycopg2
-from SQLFileQuery import *
-from SQLFileCRF import *
+#from SQLFileQuery import *
+#from SQLFileCRF import *
 #from LabSummarySQL import *
 #from AELabelling import *
 from docx.oxml.shared import OxmlElement, qn
