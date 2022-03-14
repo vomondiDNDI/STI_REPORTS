@@ -1,7 +1,7 @@
+# import docx NOT python-docx
 
-
-import docx
-import os #to run/open document automatically
+#import docx
+#import os #to run/open document automatically
 
 
 from docx import Document
@@ -26,19 +26,6 @@ import pandas as pd
 
 
 #################################################################
-
-def set_row_height(row):
-    #https://stackoverflow.com/questions/37532283/python-how-to-adjust-row-height-of-table-in-docx
-    tr = row._tr
-    trPr = tr.get_or_add_trPr()
-    trHeight = OxmlElement('w:trHeight')
-    trHeight.set(qn('w:val'), "200")
-    trHeight.set(qn('w:hRule'), "atLeast")
-    trPr.append(trHeight)
-
-
-pd.set_option('display.max_rows', None)
-pd.set_option('display.max_columns', None)
 
 document = Document()
 
@@ -114,9 +101,11 @@ document.add_page_break()
 new_section = document.add_section()
 new_section.orientation = WD_ORIENT.LANDSCAPE
 document.save('monthly_report1.docx')
+#document.save(PATHS['TEMP_FOLDER']+'monthly_report1.docx')
 #os.system('monthly_report1.docx')
 
 doc1 = Document('monthly_report1.docx')
+#document.save(PATHS['TEMP_FOLDER']+'monthly_report1.docx')
 #doc2 = Document('schedule_template1.docx')
 doc2 = Document('ScheduleEvents_template.docx')
 sec = doc2.add_section()
@@ -129,33 +118,33 @@ doc1.save('monthly_report2.docx')
 
 document = Document()
 """Start of Randomizer Tables"""
-document.add_heading('Table 2: Enrollment by Country and Site', level=1)
+document.add_heading('Table 2: Enrollment by Site', level=1)
 """
 """
 # create an instance of a word document
 #document = docx.Document()
 records = [
-    [1,  'Mbagathi Health Centre', '50'],
-    [2,  'Special Treatment Centre Casino Health Centre', '70'],
-    [3,  'Coast Provincial General Hospital', '100'],
-    [4,  'International Centre for Reproductive Health', '120'],
-    [5,  'Homa-Bay County Referral Hospital', '175']
+    ['Mbagathi Health Centre-01', '50'],
+    ['Special Treatment Centre Casino Health Centre-01', '70'],
+    ['Coast Provincial General Hospital-01', '100'],
+    ['International Centre for Reproductive Health-01', '120'],
+    ['Homa-Bay County Referral Hospital-01', '175']
 ]
 
-table_main = document.add_table(rows=1, cols=3)
+table_main = document.add_table(rows=1, cols=2)
 table_main.allow_autofit = True
 table_main.style='Table Grid'
 hdr_cells = table_main.rows[0].cells #first row
-hdr_cells[0].text = 'SiteCode' #first row text/heading
-hdr_cells[1].text = 'SiteName'
-hdr_cells[2].text = 'Enrolled'
+#hdr_cells[0].text = 'SiteCode' #first row text/heading
+hdr_cells[0].text = 'SiteName'
+hdr_cells[1].text = 'Enrolled'
 
 
-for SiteCode, SiteName, Enrolled in records:
+for SiteName, Enrolled in records:
     row_cells = table_main.add_row().cells
-    row_cells[0].text = str(SiteCode)
-    row_cells[1].text = SiteName
-    row_cells[2].text = Enrolled
+    #row_cells[0].text = str(SiteCode)
+    row_cells[0].text = SiteName
+    row_cells[1].text = Enrolled
 
 #################################################################
 #document.save('monthly_report3.docx')
