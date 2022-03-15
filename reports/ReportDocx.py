@@ -127,6 +127,7 @@ records = [
     ['Coast Provincial General Hospital-01', '100'],
     ['International Centre for Reproductive Health-01', '120'],
     ['Homa-Bay County Referral Hospital-01', '175']
+    ['Total Enrolled', '475']
 ]
 
 table_main = document.add_table(rows=1, cols=2)
