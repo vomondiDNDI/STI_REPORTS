@@ -157,8 +157,8 @@ records = [
     ['Special Treatment Centre Casino Health Centre', '1050','980','30','8'],
     ['Coast Provincial General Hospital', '1050','980','15','8'],
     ['International Centre for Reproductive Health', '1050','980','10','8'],
-    ['Homa-Bay County Referral Hospital', '1050','980',50,'8'],
-    ['Total', '3150','300',24,'24']
+    ['Homa-Bay County Referral Hospital', '1050','980','50','8'],
+    ['Total', '3150','300','24','24']
 ]
 
 table_main = document.add_table(rows=1, cols=5, style="Light Grid Accent 6")
