@@ -126,7 +126,7 @@ records = [
     ['Special Treatment Centre Casino Health Centre-01', '70'],
     ['Coast Provincial General Hospital-01', '100'],
     ['International Centre for Reproductive Health-01', '120'],
-    ['Homa-Bay County Referral Hospital-01', '175']
+    ['Homa-Bay County Referral Hospital-01', '175'],
     ['Total Enrolled', '475']
 ]
 
