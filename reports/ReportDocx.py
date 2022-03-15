@@ -153,11 +153,12 @@ document.add_heading('Table 3: Query Management Status', level=1)
 # create an instance of a word document
 #document = docx.Document()
 records = [
-    ['Mbagathi Health Centre', '1050','980(96.74%)','8(0.79%)'],
-    ['Special Treatment Centre Casino Health Centre', '1050','980(96.74%)','8(0.79%)'],
-    ['Coast Provincial General Hospital', '1050','980(96.74%)','8(0.79%)'],
-    ['International Centre for Reproductive Health', '1050','980(96.74%)','8(0.79%)'],
-    ['Homa-Bay County Referral Hospital', '1050','980(96.74%)','8(0.79%)'],
+    ['Mbagathi Health Centre', '1050','980','8'],
+    ['Special Treatment Centre Casino Health Centre', '1050','980','8'],
+    ['Coast Provincial General Hospital', '1050','980','8'],
+    ['International Centre for Reproductive Health', '1050','980','8'],
+    ['Homa-Bay County Referral Hospital', '1050','980','8'],
+    ['Total', '3150','300','24']
 ]
 
 table_main = document.add_table(rows=1, cols=4, style="Light Grid Accent 6")
