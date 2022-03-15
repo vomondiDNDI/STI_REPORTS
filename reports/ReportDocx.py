@@ -153,30 +153,32 @@ document.add_heading('Table 3: Query Management Status', level=1)
 # create an instance of a word document
 #document = docx.Document()
 records = [
-    ['Mbagathi Health Centre', '1050','980','8'],
-    ['Special Treatment Centre Casino Health Centre', '1050','980','8'],
-    ['Coast Provincial General Hospital', '1050','980','8'],
-    ['International Centre for Reproductive Health', '1050','980','8'],
-    ['Homa-Bay County Referral Hospital', '1050','980','8'],
-    ['Total', '3150','300','24']
+    ['Mbagathi Health Centre', '1050','980','20','8'],
+    ['Special Treatment Centre Casino Health Centre', '1050','980','30','8'],
+    ['Coast Provincial General Hospital', '1050','980','15','8'],
+    ['International Centre for Reproductive Health', '1050','980','10','8'],
+    ['Homa-Bay County Referral Hospital', '1050','980',50,'8'],
+    ['Total', '3150','300',24,'24']
 ]
 
-table_main = document.add_table(rows=1, cols=4, style="Light Grid Accent 6")
+table_main = document.add_table(rows=1, cols=5, style="Light Grid Accent 6")
 table_main.allow_autofit = True
 table_main.style='Table Grid'
 hdr_cells = table_main.rows[0].cells #first row
 hdr_cells[0].text = 'Site Name'
 hdr_cells[1].text = 'All Queries'
 hdr_cells[2].text = 'All Open Queries'
-hdr_cells[3].text = 'Closed Queries'
+hdr_cells[3].text = 'Unresolved Queries'
+hdr_cells[4].text = 'Closed Queries'
 
 
-for SiteName, AllQueries, OpenQueries, ClosedQueries in records:
+for SiteName, AllQueries, AllOpenQueries,UnresolvedQueries, ClosedQueries in records:
     row_cells = table_main.add_row().cells
     row_cells[0].text = SiteName
     row_cells[1].text = AllQueries
     row_cells[2].text = AllOpenQueries
-    row_cells[3].text = ClosedQueries
+    row_cells[3].text = UnresolvedQueries
+    row_cells[4].text = ClosedQueries
 
 #################################################################
 #document.save('monthly_report3.docx')
