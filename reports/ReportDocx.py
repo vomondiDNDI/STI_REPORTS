@@ -167,7 +167,7 @@ table_main.style='Table Grid'
 hdr_cells = table_main.rows[0].cells #first row
 hdr_cells[0].text = 'Site Name'
 hdr_cells[1].text = 'All Queries'
-hdr_cells[2].text = 'Open Queries'
+hdr_cells[2].text = 'All Open Queries'
 hdr_cells[3].text = 'Closed Queries'
 
 
@@ -175,7 +175,7 @@ for SiteName, AllQueries, OpenQueries, ClosedQueries in records:
     row_cells = table_main.add_row().cells
     row_cells[0].text = SiteName
     row_cells[1].text = AllQueries
-    row_cells[2].text = OpenQueries
+    row_cells[2].text = AllOpenQueries
     row_cells[3].text = ClosedQueries
 
 #################################################################
