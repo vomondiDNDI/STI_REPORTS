@@ -130,9 +130,9 @@ records = [
     ['Total Enrolled', '475']
 ]
 
-table_main = document.add_table(rows=1, cols=2)
+table_main = document.add_table(rows=1, cols=2, style = "Medium Shading 2 Accent 1")
 table_main.allow_autofit = True
-table_main.style='Table Grid'
+
 hdr_cells = table_main.rows[0].cells #first row
 #hdr_cells[0].text = 'SiteCode' #first row text/heading
 hdr_cells[0].text = 'SiteName'
@@ -161,7 +161,7 @@ records = [
     ['Total', '3150','300','24']
 ]
 
-table_main = document.add_table(rows=1, cols=4, style="Light Grid Accent 6")
+table_main = document.add_table(rows=1, cols=4, style="Medium Shading 2 Accent 1")
 table_main.allow_autofit = True
 table_main.style='Table Grid'
 hdr_cells = table_main.rows[0].cells #first row
@@ -191,7 +191,7 @@ records = [
 ]
 document.add_heading('Table 4: Serious Adverse Events Listings', level=1)
 
-table_main = document.add_table(rows=1, cols=6, style="Light Grid Accent 6")
+table_main = document.add_table(rows=1, cols=6, style="Medium Shading 2 Accent 1")
 table_main.allow_autofit = True
 table_main.style='Table Grid'
 hdr_cells = table_main.rows[0].cells #first row
@@ -225,7 +225,7 @@ records = [
 ]
 document.add_heading('Table 5: Adverse Events Listings', level=1)
 
-table_main = document.add_table(rows=1, cols=8, style="Light Grid Accent 6")
+table_main = document.add_table(rows=1, cols=8, style="Medium Shading 2 Accent 1")
 table_main.allow_autofit = True
 table_main.style='Table Grid'
 hdr_cells = table_main.rows[0].cells #first row
