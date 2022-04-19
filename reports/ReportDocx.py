@@ -1,33 +1,22 @@
-#import docx
-#import os #to run/open document automatically
-
-
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.section import WD_ORIENT
 from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.enum.table import WD_ROW_HEIGHT
 from docx.shared import Inches,Pt
-import psycopg2
-#from SQLFileQuery import *
-#from SQLFileCRF import *
-#from LabSummarySQL import *
-#from AELabelling import *
 from docx.oxml.shared import OxmlElement, qn
 from docxtpl import DocxTemplate
 import datetime
-from Settings import PATHS,DB
-#from expected_crf import *
-import os, shutil
-import math
+#import dataframe_image as dfi
+#import matplotlib
+import numpy as np
 import pandas as pd
+import os
 
 
-#################################################################
+doc = Document()
 
-document = Document()
-
-p1 = document.add_paragraph('')
+p1 = doc.add_paragraph('')
 run =p1.add_run('STI - Zoliflodacin phase III')
 run.italic = False
 run.bold = False
@@ -39,7 +28,7 @@ paragraph_format = p1.paragraph_format
 paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
 paragraph_format.space_before = Pt(48)
 paragraph_format.space_after = Pt(18)
-p2 = document.add_paragraph('')
+p2 = doc.add_paragraph('')
 run =p2.add_run('PROGRESS REPORT')
 run.italic = False
 run.bold = True
@@ -51,13 +40,13 @@ paragraph_format = p2.paragraph_format
 paragraph_format.space_before = Pt(48)
 paragraph_format.space_after = Pt(18)
 paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
-p3 = document.add_paragraph('By the 5th of every month')
+p3 = doc.add_paragraph('By the 5th of every month')
 paragraph_format = p3.paragraph_format
 paragraph_format.space_before = Pt(48)
 paragraph_format.space_after = Pt(4)
 paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
 now = datetime.datetime.now()
-p4 = document.add_paragraph()
+p4 = doc.add_paragraph()
 run =p4.add_run('(With data received as of '+ now.strftime("%d-%B-%Y")+')')
 run.italic = True
 run.bold = False
@@ -66,11 +55,11 @@ font.name = 'Calibri'
 font.size = Pt(10)
 paragraph_format = p4.paragraph_format
 paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
-document.add_page_break()
-p1 = document.add_paragraph('Table of contents')
+doc.add_page_break()
+p1 = doc.add_paragraph('Table of contents')
 
 
-paragraph = document.add_paragraph()
+paragraph = doc.add_paragraph()
 run = paragraph.add_run()
 fldChar = OxmlElement('w:fldChar')  # creates a new element
 fldChar.set(qn('w:fldCharType'), 'begin')  # sets attribute on element
@@ -95,10 +84,10 @@ r_element.append(fldChar4)
 p_element = paragraph._p
 
 
-document.add_page_break()
-new_section = document.add_section()
+doc.add_page_break()
+new_section = doc.add_section()
 new_section.orientation = WD_ORIENT.LANDSCAPE
-document.save('monthly_report1.docx')
+doc.save('monthly_report1.docx')
 #document.save(PATHS['TEMP_FOLDER']+'monthly_report1.docx')
 #os.system('monthly_report1.docx')
 
@@ -113,150 +102,178 @@ for element in doc2.element.body:
 #doc1.add_page_break()
 
 doc1.save('monthly_report2.docx')
+#os.system('monthly_report2.docx')
 
-document = Document()
-"""Start of Randomizer Tables"""
-document.add_heading('Table 2: Enrollment by Site', level=1)
-"""
-"""
-# create an instance of a word document
-#document = docx.Document()
-records = [
-    ['Mbagathi Health Centre-01', '50'],
-    ['Special Treatment Centre Casino Health Centre-01', '70'],
-    ['Coast Provincial General Hospital-01', '100'],
-    ['International Centre for Reproductive Health-01', '120'],
-    ['Homa-Bay County Referral Hospital-01', '175'],
-    ['Total Enrolled', '475']
-]
-
-table_main = document.add_table(rows=1, cols=2, style = "Medium Shading 2 Accent 1")
-table_main.allow_autofit = True
-
-hdr_cells = table_main.rows[0].cells #first row
-#hdr_cells[0].text = 'SiteCode' #first row text/heading
-hdr_cells[0].text = 'SiteName'
-hdr_cells[1].text = 'Enrolled'
+doc = Document()
+#doc.add_page_break()
+#table_number_count = 2
+doc.add_heading('Table 2: a)Subject Enrollment by Site ', level=1)
+#*8888888888888888
+endata = pd.read_excel("StudySummaryReport.xlsx", skipfooter=10 ,usecols =['Site', 'Enrollment Goal', 'Enrollment Actual'])
+# Calculating Percentage
+endata['PercentageEnrolled'] = (endata['Enrollment Actual'] /
+                  endata['Enrollment Goal']) * 100
 
 
-for SiteName, Enrolled in records:
-    row_cells = table_main.add_row().cells
-    #row_cells[0].text = str(SiteCode)
-    row_cells[0].text = SiteName
-    row_cells[1].text = Enrolled
+endata.PercentageEnrolled = endata.PercentageEnrolled.round(decimals = 0)
 
-#################################################################
-#document.save('monthly_report3.docx')
-#os.system('monthly_report3.docx')
-document.add_page_break()
-document.add_heading('Table 3: Query Management Status', level=1)
-# create an instance of a word document
-#document = docx.Document()
-records = [
-    ['Mbagathi Health Centre', '1050','980','20'],
-    ['Special Treatment Centre Casino Health Centre', '1050','980','30'],
-    ['Coast Provincial General Hospital', '1050','980','15'],
-    ['International Centre for Reproductive Health', '1050','980','10'],
-    ['Homa-Bay County Referral Hospital', '1050','980','50'],
-    ['Total', '3150','300','24']
-]
+endata['PercentageEnrolled'] = endata['PercentageEnrolled'].astype(str) + '%'
 
-table_main = document.add_table(rows=1, cols=4, style="Medium Shading 2 Accent 1")
-table_main.allow_autofit = True
-table_main.style='Table Grid'
-hdr_cells = table_main.rows[0].cells #first row
-hdr_cells[0].text = 'Site Name'
-hdr_cells[1].text = 'All Queries'
-hdr_cells[2].text = 'All Open Queries'
-hdr_cells[3].text = 'Closed Queries'
+table = doc.add_table(rows=endata.shape[0]+1, cols=endata.shape[1], style = "Medium Shading 2 Accent 1")
+table_cells = table._cells
+
+# add the header rows.
+for j in range(endata.shape[-1]):
+    table.cell(0,j).text = endata.columns[j]
+
+# --- add the rest of the data frame ---
+for i in range(endata.shape[0]):
+    for j, table.cell in enumerate(table.rows[i + 1].cells):
+        table.cell.text = str(endata.values[i, j])
 
 
-for SiteName, AllQueries, AllOpenQueries , ClosedQueries in records:
-    row_cells = table_main.add_row().cells
-    row_cells[0].text = SiteName
-    row_cells[1].text = AllQueries
-    row_cells[2].text = AllOpenQueries
-    row_cells[3].text = ClosedQueries
+doc.add_page_break()
+#************
+doc.add_heading('b)Weekly Enrollment by Site ', level=1)
+endata = pd.read_excel("Medrio_EnrollmentChart_LIVE_STI_Study.xlsx", sheet_name="Data")
 
-#################################################################
-#document.save('monthly_report3.docx')
-#os.system('monthly_report3.docx')
-document.add_page_break()
-# create an instance of a word document
-#document = docx.Document()
-records = [
-    ['1016', 'fever of unknown origin','2018-11-24','2018-11-24','Fatal','None'],
-    ['1021', 'multiorgan failure','2019-02-12','2019-02-12','Fatal','None'],
-    ['1041', 'acute kidney injury','2019-12-08','2019-12-08','Resolved','None']
-]
-document.add_heading('Table 4: Serious Adverse Events Listings', level=1)
+table = doc.add_table(rows=endata.shape[0]+1, cols=endata.shape[1], style = "Medium Shading 2 Accent 1")
+table_cells = table._cells
 
-table_main = document.add_table(rows=1, cols=6, style="Medium Shading 2 Accent 1")
-table_main.allow_autofit = True
-table_main.style='Table Grid'
-hdr_cells = table_main.rows[0].cells #first row
-hdr_cells[0].text = 'ID'
-hdr_cells[1].text = 'SAE Description'
-hdr_cells[2].text = 'Start Date'
-hdr_cells[3].text = 'End Date'
-hdr_cells[4].text = 'Intensity'
-hdr_cells[5].text = 'Outcome'
+# add the header rows.
+for j in range(endata.shape[-1]):
+    table.cell(0,j).text = endata.columns[j]
+
+# --- add the rest of the data frame ---
+for i in range(endata.shape[0]):
+    for j, table.cell in enumerate(table.rows[i + 1].cells):
+        table.cell.text = str(endata.values[i, j])
 
 
-for ID, SAEDescription, StartDate, EndDate, Intensity, Outcome in records:
-    row_cells = table_main.add_row().cells
-    row_cells[0].text = str(ID)
-    row_cells[1].text = SAEDescription
-    row_cells[2].text = StartDate
-    row_cells[3].text = EndDate
-    row_cells[4].text = Intensity
-    row_cells[5].text = Outcome
-
-#################################################################
-
-
-document.add_page_break()
-# create an instance of a word document
-#document = docx.Document()
-records = [
-    ['716', 'Nausea','2018-11-24','2018-11-24','Resolved','Yes','None','Yes'],
-    ['700', 'Vomiting','2019-02-12','2019-02-12','Resolved','Yes','None','Yes'],
-    ['724', 'Diarrhoea','2019-12-08','2019-12-08','Resolved','Yes','None','Yes']
-]
-document.add_heading('Table 5: Adverse Events Listings', level=1)
-
-table_main = document.add_table(rows=1, cols=8, style="Medium Shading 2 Accent 1")
-table_main.allow_autofit = True
-table_main.style='Table Grid'
-hdr_cells = table_main.rows[0].cells #first row
-hdr_cells[0].text = 'AE Number'
-hdr_cells[1].text = 'Adverse Event'
-hdr_cells[2].text = 'Start Date'
-hdr_cells[3].text = 'Intensity'
-hdr_cells[4].text = 'Relation to Participant'
-hdr_cells[5].text = 'Outcome'
-hdr_cells[6].text = 'End Date'
-hdr_cells[7].text = 'Was Concomitant Medication Given?'
-
-
-for AEno, AE , StartDate, Intensity,RParticipant, Outcome, EndDate ,ConcomitantGiven in records:
-    row_cells = table_main.add_row().cells
-    row_cells[0].text = str(AEno)
-    row_cells[1].text = AE
-    row_cells[2].text = StartDate
-    row_cells[3].text = Intensity
-    row_cells[4].text = RParticipant
-    row_cells[5].text = Outcome
-    row_cells[6].text = EndDate
-    row_cells[7].text = ConcomitantGiven
-
-document.save('monthly_report3.docx')
+doc.save("Medrio_EnrollmentChart_LIVE_STI_Study.docx")
+#os.system("Medrio_EnrollmentChart_LIVE_STI_Study.docx")
 
 doc3 = Document('monthly_report2.docx')
-doc4 = Document('monthly_report3.docx')
+doc4 = Document('Medrio_EnrollmentChart_LIVE_STI_Study.docx')
 for element in doc4.element.body:
     doc3 .element.body.append(element)
-doc3.save('STImonthly_report.docx')
-os.system('STImonthly_report.docx')
+doc3.save('monthly_report3.docx')
+
+doc = Document()
+doc.add_page_break()
+doc.add_heading('Table 3: Site Forms Summary Report ', level=1)
+data = pd.read_excel("Medrio_SiteDataSummaryReport.xlsx", usecols =['Subject', 'Forms Entered', 'Forms Complete', 'Forms Not Expected',
+'Forms Not Complete'])
+
+# Calculating forms done
+data['FormsExpected'] = data['Forms Complete'] + data['Forms Not Complete']
+
+# Calculating Percentage
+data['FormsDone'] = (data['Forms Complete'] /data['FormsExpected']) * 100
+
+data.FormsDone = data.FormsDone.round(decimals = 0)
+
+data['FormsDone'] = data['FormsDone'].astype(str) + '%'
+
+data.rename(columns={'Subject': 'Site Total'}, inplace=True)
+
+data = data.reindex(['Site Total', 'FormsExpected', 'Forms Complete', 'Forms Not Complete', 'Forms Not Expected','FormsDone'], axis=1)
 
 
+
+tdata=data[data["Site Total"].str.contains('TOTAL')]
+
+table = doc.add_table(rows=tdata.shape[0]+1, cols=tdata.shape[1], style="Medium Shading 2 Accent 1")
+table_cells = table._cells
+
+# add the header rows.
+for j in range(tdata.shape[-1]):
+    table.cell(0,j).text = tdata.columns[j]
+
+# --- add the rest of the data frame ---
+for i in range(tdata.shape[0]):
+    for j, table.cell in enumerate(table.rows[i + 1].cells):
+        table.cell.text = str(tdata.values[i, j])
+doc.save("SiteDataSummaryReport.docx")
+#os.system("SiteDataSummaryReport.docx")
+
+doc4 = Document('monthly_report3.docx')
+doc5 = Document('SiteDataSummaryReport.docx')
+for element in doc5.element.body:
+    doc4.element.body.append(element)
+doc4.save('monthly_report4.docx')
+#os.system('monthly_report4.docx')
+
+doc.add_page_break()
+doc = Document()
+doc.add_page_break()
+doc.add_heading('Table 4: Query Management Status', level=1)
+sdata = pd.read_excel("Medrio_SubjectDataSummaryReport.xlsx", usecols =['Site', 'Subject', 'Open Queries', 'Total Queries'])
+
+smdata=sdata.groupby(['Site'])['Open Queries','Total Queries'].agg('sum').reset_index()
+
+table = doc.add_table(rows=smdata.shape[0]+1, cols=smdata.shape[1], style = "Medium Shading 2 Accent 1")
+table_cells = table._cells
+
+# add the header rows.
+for j in range(smdata.shape[-1]):
+    table.cell(0,j).text = smdata.columns[j]
+
+# --- add the rest of the data frame ---
+for i in range(smdata.shape[0]):
+    for j, table.cell in enumerate(table.rows[i + 1].cells):
+        table.cell.text = str(smdata.values[i, j])
+
+p = doc.add_paragraph('')
+pf = p.paragraph_format
+pf.space_before = Pt(6)
+pf.space_after = Pt(0)
+run = p.add_run('*Open Queries:Queries pending action.')
+run.italic = True
+font = run.font
+font.name = 'Calibri'
+font.size = Pt(10)
+
+doc.save("SubjectDataSummaryReport.docx")
+#os.system("SubjectDataSummaryReport.docx")
+
+doc5 = Document('monthly_report4.docx')
+doc6 = Document('SubjectDataSummaryReport.docx')
+for element in doc6.element.body:
+    doc5.element.body.append(element)
+doc5.save('STI_Monthly_Report.docx')
+os.system('STI_Monthly_Report.docx')
+
+
+
+
+# doc = Document()
+# doc.add_page_break()
+# #anadata = pd.read_excel("Medrio_EnrollmentChart_LIVE_STI_Study.xlsx", sheet_name="Analysis")
+# doc.add_picture('d__medrio_data_temp_Medrio_EnrollmentChart_LIVE_STI_Study.png', height=Inches(8.0), width=Inches(7.0))
+# last_paragraph = doc.paragraphs[-1]
+# last_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+# doc.save("Medrio_EnrollmentChart_LIVE_STI_Study.docx")
+# doc7 = Document('STImonthly_report1.docx')
+# doc8 = Document('Medrio_EnrollmentChart_LIVE_STI_Study.docx')
+# for element in doc8.element.body:
+#     doc7.element.body.append(element)
+# doc7.save('Medrio_EnrollmentChart.docx')
+# #os.system('Medrio_EnrollmentChart.docx')
+#
+# doc.add_page_break()
+# doc = Document()
+#
+# doc.add_picture('d__medrio_data_temp_Medrio_EnrollmentChart_LIVE_STI_Study.png', height=Inches(8.0), width=Inches(7.0))
+# last_paragraph = doc.paragraphs[-1]
+# last_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+#
+# doc.save("Medrio_EnrollmentChart_LIVE_STI_Study1.docx")
+# #os.system("Medrio_EnrollmentChart_LIVE_STI_Study1.docx")
+#
+# doc9 = Document('Medrio_EnrollmentChart.docx')
+# doc10 = Document('Medrio_EnrollmentChart_LIVE_STI_Study1.docx')
+# for element in doc10.element.body:
+#     doc9.element.body.append(element)
+# doc9.save('Medrio_EnrollmentChart.docx')
+# #os.system('Medrio_EnrollmentChart.docx')
